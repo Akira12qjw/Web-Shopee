@@ -1,0 +1,2 @@
+framer motion: thư viện về animation 
+floating ui: handle tính position để hiển thị tool tip, popper
