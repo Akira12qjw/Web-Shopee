@@ -1,30 +1,92 @@
-import { Link } from 'react-router-dom'
-import { useRef, useState } from 'react'
-import { FloatingPortal, arrow, useFloating, shift, offset } from '@floating-ui/react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
+import Popover from '../Popover'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import authApi from 'src/apis/auth.api'
+import { useContext } from 'react'
+import { AppContext } from 'src/contexts/app.context'
+import path from 'src/constants/path'
+import useQueryConfig from 'src/hooks/useQueryConfig'
+import { useForm } from 'react-hook-form'
+import { schema, Schema } from 'src/utils/rules'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { omit } from 'lodash'
+import { purchasesStatus } from 'src/constants/purchase'
+import purchaseApi from 'src/apis/purchase.api'
+import noproduct from 'src/assets/images/no-product.png'
+import { formatCurrency } from 'src/utils/utils'
+type FormData = Pick<Schema, 'name'>
+
+const nameSchema = schema.pick(['name'])
+const MAX_PURCHASES = 5
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false)
-  const arrowRef = useRef<HTMLElement>(null)
-  const { refs, x, y, strategy, middlewareData } = useFloating({
-    middleware: [offset(6), shift(), arrow({ element: arrowRef })]
+  const queryConfig = useQueryConfig()
+  console.log(queryConfig)
+  const { register, handleSubmit } = useForm<FormData>({
+    defaultValues: {
+      name: ''
+    },
+    resolver: yupResolver(nameSchema)
   })
-  const showPopover = () => {
-    setIsOpen(true)
+
+  const navigate = useNavigate()
+  const { isAuthenticated, setIsAuthenticated, setProfile, profile } = useContext(AppContext)
+  const logoutMutation = useMutation({
+    mutationFn: authApi.logout,
+    onSuccess: () => {
+      setIsAuthenticated(false)
+      setProfile(null)
+    }
+  })
+  //khi chuyển trang thì header chỉ bị re-render
+  //chứ không bị unmount - mounting again
+  // Trừ trường hợp logout rồi nhảy sang RegisterLayout rồi nhảy vào lại
+  // Nên các query này sẽ không bị inactive => Không bị gọi lại => không cần thiết phải set stale: Infinity
+  const { data: purchasesInCartData } = useQuery({
+    queryKey: ['purchases', { status: purchasesStatus.inCart }],
+    queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart }),
+    enabled: isAuthenticated
+  })
+
+  const purchasesInCart = purchasesInCartData?.data.data
+
+  const handleLogout = () => {
+    logoutMutation.mutate()
   }
-  const hidePopover = () => {
-    setIsOpen(false)
-  }
+
+  const onSubmitSearch = handleSubmit((data) => {
+    const config = queryConfig.order
+      ? omit(
+          {
+            ...queryConfig,
+            sort_by: data.name
+          },
+          ['order', 'sort_by']
+        )
+      : {
+          ...queryConfig,
+          name: data.name
+        }
+    navigate({
+      pathname: path.home,
+      search: createSearchParams(config).toString()
+    })
+  })
+
   return (
     <div className='pb-5 pt-2 bg-[linear-gradient(-180deg,#f53d2d,#f63)] text-white'>
       <div className='container'>
         <div className='flex justify-end'>
-          <div
-            className='flex items-center py-1 hover:text-gray-300 cursor-pointer'
-            ref={refs.setReference}
-            // ref={reference}
-            onMouseEnter={showPopover}
-            onMouseLeave={hidePopover}
+          <Popover
+            className='flex items-center py-1 hover:text-white/70 cursor-pointer '
+            renderPopover={
+              <div className='bg-white relative shadow-md rounded-sm border-gray-200'>
+                <div className='flex flex-col py-2 pr-28 pl-3 '>
+                  <button className='py-2 px-3 hover:text-orange'>Tiếng Việt</button>
+                  <button className='py-2 px-3 hover:text-orange mt-2'>English</button>
+                </div>
+              </div>
+            }
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -52,55 +114,55 @@ export default function Header() {
             >
               <path strokeLinecap='round' strokeLinejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' />
             </svg>
-            <FloatingPortal>
-              <AnimatePresence>
-                {isOpen && (
-                  <motion.div
-                    ref={refs.setFloating}
-                    style={{
-                      position: strategy,
-                      top: y ?? 0,
-                      left: x ?? 0,
-                      width: 'max-content',
-                      transformOrigin: `${middlewareData.arrow?.x}px top`
-                    }}
-                    initial={{ opacity: 0, transform: 'scale(0)' }}
-                    animate={{ opacity: 1, transform: 'scale(1)' }}
-                    exit={{ opacity: 0, transform: 'scale(0)' }}
-                    transition={{ duration: 0.2 }}
+          </Popover>
+          {isAuthenticated && (
+            <Popover
+              className='flex items-center py-1 hover:text-white/70 cursor-pointer ml-6'
+              renderPopover={
+                <div className='bg-white relative shadow-md rounded-sm border-gray-200'>
+                  <Link
+                    to={path.profile}
+                    className='block py-3 px-4 hover:bg-slate-100 bg-white hover:text-cyan-500 w-full text-left '
                   >
-                    <span
-                      ref={arrowRef}
-                      className='border-x-transparent border-t-transparent border-b-white border-[11px] absolute translate-y-[-95%] z-10'
-                      style={{
-                        position: 'absolute',
-                        left: middlewareData.arrow?.x,
-                        top: middlewareData.arrow?.y
-                      }}
-                    ></span>
-                    <div className='bg-white relative shadow-md rounded-sm border-gray-200'>
-                      <div className='flex flex-col py-2 px-3'>
-                        <button className='py-2 px-3 hover:text-orange'>Tiếng Việt</button>
-                        <button className='py-2 px-3 hover:text-orange mt-2'>English</button>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </FloatingPortal>
-          </div>
-
-          <div className='flex items-center py-1 hover:text-gray-300 cursor-pointer ml-6'>
-            <div className='w-6 h-6 mr-2 flex-shrink-0'>
-              <img
-                src='https://down-vn.img.susercontent.com/file/vn-11134004-7r98o-lqovbfauwd76e1_tn
+                    Tài khoản của tôi
+                  </Link>
+                  <Link
+                    to='/'
+                    className='block py-3 px-4 hover:bg-slate-100 bg-white hover:text-cyan-500 w-full text-left'
+                  >
+                    Đơn mua
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className='block py-3 px-4 hover:bg-slate-100 bg-white hover:text-cyan-500 w-full text-left'
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              }
+            >
+              <div className='w-6 h-6 mr-2 flex-shrink-0'>
+                <img
+                  src='https://down-vn.img.susercontent.com/file/vn-11134004-7r98o-lqovbfauwd76e1_tn
 '
-                alt='avatar'
-                className='w-full h-full object-cover rounded-full'
-              />
+                  alt='avatar'
+                  className='w-full h-full object-cover rounded-full'
+                />
+              </div>
+              <div>{profile?.email}</div>
+            </Popover>
+          )}
+          {!isAuthenticated && (
+            <div className='flex items-center'>
+              <Link to={path.register} className='mx-3 capitalize hover:text-white/70'>
+                Đăng Ký
+              </Link>
+              <div className='border-r-[1px] border-x-white/40 h-4' />
+              <Link to={path.login} className='mx-3 capitalize hover:text-white/70'>
+                Đăng Nhập
+              </Link>
             </div>
-            <div>TruongGiang</div>
-          </div>
+          )}
         </div>
         <div className='grid grid-cols-12 gap-4 mt-4 items-end'>
           <Link to='/' className='col-span-2'>
@@ -110,13 +172,13 @@ export default function Header() {
               </g>
             </svg>
           </Link>
-          <form className='col-span-9'>
+          <form className='col-span-9' onSubmit={onSubmitSearch}>
             <div className='bg-white rounded-sm p-1 flex'>
               <input
                 type='text'
-                name='search'
                 className='text-black px-3 py-2 flex-grow border-none outline-none bg-transparent'
                 placeholder='FREESHIP ĐƠN TỪ 0Đ'
+                {...register('name')}
               />
               <button className='rounded-sm py-2 px-6 flex-shrink-0 bg-orange hover:opacity-90'>
                 <svg
@@ -136,23 +198,71 @@ export default function Header() {
               </button>
             </div>
           </form>
-          <div className='cols-span-1'>
-            <Link to='/'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={1.5}
-                stroke='currentColor'
-                className='w-8 h-8'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z'
-                />
-              </svg>
-            </Link>
+          <div className='cols-span-1 justify-self-center'>
+            <Popover
+              renderPopover={
+                <div className='bg-white relative shadow-md rounded-sm border-gray-200 max-w-[400px] text-sm'>
+                  {purchasesInCart ? (
+                    <div className='p-2'>
+                      <div className='capitalize text-gray-400'>Sản phẩm mới thêm</div>
+                      <div className='mt-5'>
+                        {purchasesInCart.slice(0, MAX_PURCHASES).map((purchase) => (
+                          <div className='mt-2 flex py-2 hover:bg-gray-100' key={purchase._id}>
+                            <div className='flex-shrink-0'>
+                              <img
+                                src={purchase.product.image}
+                                alt={purchase.product.name}
+                                className='h-11 w-11 object-cover'
+                              />
+                            </div>
+                            <div className='ml-2 flex-grow overflow-hidden'>
+                              <div className='truncate'>{purchase.product.name}</div>
+                            </div>
+                            <div className='ml-2 flex-shrink-0'>
+                              <span className='text-orange'>₫{formatCurrency(purchase.product.price)}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className='mt-6 flex items-center justify-between'>
+                        <div className='text-xs capitalize text-gray-500'>
+                          {purchasesInCart.length > MAX_PURCHASES ? purchasesInCart.length - MAX_PURCHASES : ''} Thêm
+                          hàng vào giỏ
+                        </div>
+                        <button className='rounded-sm bg-orange px-4 py-2 capitalize text-white hover:bg-opacity-90'>
+                          Xem giỏ hàng
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className='p-2 flex h-[300px] w-[300px] items-center justify-center'>
+                      <img src={noproduct} alt='no purchase' className='h-23 w-20' />
+                      <div className='mt-3 capitalize'>Chưa có sản phẩm</div>
+                    </div>
+                  )}
+                </div>
+              }
+            >
+              <Link to='/' className='relative'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  strokeWidth={1.5}
+                  stroke='currentColor'
+                  className='w-8 h-8'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z'
+                  />
+                </svg>
+                <span className='absolute top-[-5px] left-[17px] rounded-full bg-white px-[9px] py-[1px] text-xs text-orange '>
+                  {purchasesInCart?.length}
+                </span>
+              </Link>
+            </Popover>
           </div>
         </div>
       </div>
