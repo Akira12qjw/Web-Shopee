@@ -12,6 +12,7 @@ import { NoUndefinedField } from 'src/types/utils.type'
 import RatingStars from '../RatingStars'
 import { omit } from 'lodash'
 import { ObjectSchema } from 'yup'
+import { useTranslation } from 'react-i18next'
 /**
  * Rule validate
  * price_min phải >= price_max
@@ -28,6 +29,7 @@ type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>
 const priceSchema = schema.pick(['price_min', 'price_max'])
 
 export default function AsideFilter({ queryConfig, categories }: Props) {
+  const { t } = useTranslation('home')
   const { category } = queryConfig
   const {
     control,
@@ -88,7 +90,7 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
             </g>
           </g>
         </svg>
-        Tất cả danh mục
+        {t('aside filter.all categories')}
       </Link>
       <div className='bg-gray-300 h-[1px] my-4' />
       <ul>
@@ -137,7 +139,7 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
             />
           </g>
         </svg>
-        Bộ lọc tìm kiếm
+        {t('aside filter.filter search')}
       </Link>
       <div className='bg-gray-300 h-[1px] my-4' />
       <div className='my-5'>
