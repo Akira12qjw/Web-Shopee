@@ -13,8 +13,10 @@ import keyBy from 'lodash/keyBy'
 import { toast } from 'react-toastify'
 import { AppContext } from 'src/contexts/app.context'
 import noproduct from 'src/assets/images/no-product.png'
+import { useTranslation } from 'react-i18next'
 
 export default function Cart() {
+  const { t } = useTranslation('cart')
   const { extendedPurchases, setExtendedPurchases } = useContext(AppContext)
   const { data: purchasesInCartData, refetch } = useQuery({
     queryKey: ['purchases', { status: purchasesStatus.inCart }],
@@ -161,15 +163,15 @@ export default function Cart() {
                           onChange={handleCheckAll}
                         />
                       </div>
-                      <div className='flex-grow text-black'>Sản phẩm</div>
+                      <div className='flex-grow text-black'>{t('Header_cart.Product')}</div>
                     </div>
                   </div>
                   <div className='col-span-6'>
                     <div className='grid grid-cols-5 text-center'>
-                      <div className='col-span-2'>Đơn giá</div>
-                      <div className='col-span-1'>Số lượng</div>
-                      <div className='col-span-1'>Số tiền</div>
-                      <div className='col-span-1'>Thao tác</div>
+                      <div className='col-span-2'>{t('Header_cart.Unit price')}</div>
+                      <div className='col-span-1'>{t('Header_cart.Quantity')}</div>
+                      <div className='col-span-1'>{t('Header_cart.Total Price')}</div>
+                      <div className='col-span-1'>{t('Header_cart.Actions')}</div>
                     </div>
                   </div>
                 </div>
@@ -256,7 +258,7 @@ export default function Cart() {
                                 onClick={handleDelete(index)}
                                 className='bg-none text-black transition-colors hover:text-orange'
                               >
-                                Xóa
+                                {t('Header_cart.Delete')}
                               </button>
                             </div>
                           </div>
@@ -278,21 +280,23 @@ export default function Cart() {
                   />
                 </div>
                 <button className='mx-3 border-none bg-none' onClick={handleCheckAll}>
-                  Chọn tất cả ({extendedPurchases.length})
+                  {t('Header_cart.Select All')}({extendedPurchases.length})
                 </button>
                 <button className='mx-3 border-none bg-none' onClick={handleDeleteManyPurchases}>
-                  Xóa
+                  {t('Header_cart.Delete')}
                 </button>
               </div>
 
               <div className='mt-5 flex flex-col sm:ml-auto sm:mt-0 sm:flex-row sm:items-center'>
                 <div>
                   <div className='flex items-center sm:justify-end'>
-                    <div>Tổng thanh toán ({checkedPurchasesCount} sản phẩm):</div>
+                    <div>
+                      {t('Header_cart.Total')} ({checkedPurchasesCount} {t('Header_cart.Product')}):
+                    </div>
                     <div className='ml-2 text-2xl text-orange'>₫{formatCurrency(totalCheckedPurchasePrice)}</div>
                   </div>
                   <div className='flex items-center text-sm sm:justify-end'>
-                    <div className='text-gray-500'>Tiết kiệm</div>
+                    <div className='text-gray-500'>{t('Header_cart.Saved')}</div>
                     <div className='ml-6 text-orange'>₫{formatCurrency(totalCheckedPurchaseSavingPrice)}</div>
                   </div>
                 </div>
@@ -301,7 +305,7 @@ export default function Cart() {
                   onClick={handleBuyPurchases}
                   disabled={buyProductsMutation.isPending}
                 >
-                  Mua hàng
+                  {t('Header_cart.Buy Product')}
                 </Button>
               </div>
             </div>

@@ -1,0 +1,37 @@
+{
+  "MyAccount": "Tài khoản của tôi",
+
+  "MyPurchase": "Đơn mua",
+  "Logout": "Đăng xuất",
+  "Change Password": "Đổi mật khẩu",
+  "Password": "Mật khẩu cũ",
+  "New password": "Mật khẩu mới",
+  "Confirm Password": "Nhập lại mật khẩu",
+  "Total price": "Tổng giá tiền",
+
+  "All ": "Tất cả",
+  "To Cofirm": "Chờ xác nhận",
+  "To delivery": "Chờ lấy hàng",
+  "Delivering": "Đang giao",
+  "Delivered": "Đã giao",
+  "Cancelled": "Đã hủy",
+
+  "Account": {
+    "Register": "Đăng Ký",
+    "Login": "Đăng Nhập",
+    "Have an account?": "Bạn đã có tài khoản ?"
+  },
+  "Profile": {
+    "My Profile": "Hồ sơ của tôi",
+    "Manage and protect your account": "Quản lý thông tin hồ sơ để bảo mật tài khoản",
+    "Name": "Tên",
+    "Phone number": "Số điện thoại",
+    "Address": "Địa chỉ",
+    "Date of Birth": "Ngày sinh",
+    "Save": "Lưu",
+    "Select Image": "Chọn ảnh",
+    "File size maximum 1 MB": "Dung lượng tối đa 1MB",
+    "File extension .JPEG, .PNG": "Định dạng .JPEG, .PNG",
+    "Edit Profile": "Sửa hồ sơ"
+  }
+}

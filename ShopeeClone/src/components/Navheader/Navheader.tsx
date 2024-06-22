@@ -12,6 +12,8 @@ import { locales } from 'src/i18n/i18n'
 
 export default function NavHeader() {
   const { i18n } = useTranslation()
+  const { t } = useTranslation(['home', 'info'])
+
   const currentLanguage = locales[i18n.language as keyof typeof locales]
   const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
   const queryClient = useQueryClient()
@@ -85,19 +87,19 @@ export default function NavHeader() {
                 to={path.profile}
                 className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-cyan-500'
               >
-                Tài khoản của tôi
+                {t('info:MyAccount')}
               </Link>
               <Link
                 to={path.historyPurchase}
                 className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-cyan-500'
               >
-                Đơn mua
+                {t('info:MyPurchase')}
               </Link>
               <button
                 onClick={handleLogout}
                 className='block w-full bg-white py-3 px-4 text-left hover:bg-slate-100 hover:text-cyan-500'
               >
-                Đăng xuất
+                {t('info:Logout')}
               </button>
             </div>
           }
@@ -111,11 +113,11 @@ export default function NavHeader() {
       {!isAuthenticated && (
         <div className='flex items-center'>
           <Link to={path.register} className='mx-3 capitalize hover:text-white/70'>
-            Đăng ký
+            {t('aside filter.Sign up')}
           </Link>
           <div className='h-4 border-r-[1px] border-r-white/40' />
           <Link to={path.login} className='mx-3 capitalize hover:text-white/70'>
-            Đăng nhập
+            {t('aside filter.Login')}
           </Link>
         </div>
       )}

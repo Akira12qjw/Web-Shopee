@@ -1,0 +1,37 @@
+{
+  "MyAccount": "My Account",
+
+  "MyPurchase": "My Purchase",
+  "Logout": "Logout",
+  "Change Password": "Change Password",
+  "Password": "Password",
+  "New password": "New password",
+  "Confirm Password": "Confirm Password",
+  "Total price": "Total price",
+
+  "All ": "All",
+  "To Cofirm": "To Receive",
+  "To delivery": "To delivery",
+  "Delivering": "Delivering",
+  "Delivered": "Delivered",
+  "Cancelled": "Cancelled",
+
+  "Account": {
+    "Register": "Sigh up",
+    "Login": "Login",
+    "Have an account?": "Have an account ?"
+  },
+  "Profile": {
+    "My Profile": "My Profile",
+    "Manage and protect your account": "Manage and protect your account",
+    "Name": "Name",
+    "Phone number": "Phone number",
+    "Address": "Address",
+    "Date of Birth": "Date of Birth",
+    "Save": "Save",
+    "Select Image": "Select Image",
+    "File size maximum 1 MB": "File size: maximum 1 MB",
+    "File extension .JPEG, .PNG": "File extension: .JPEG, .PNG",
+    "Edit Profile": "Edit Profile"
+  }
+}

@@ -1,3 +1,10 @@
 {
-  "available": "Available products"
+  "available": "Available products",
+  "Sold": "Sold",
+  "OFF": "OFF",
+  "Quantity": "Quantity",
+  "Add to cart": "Add to cart",
+  "Buy now": "Buy now",
+  "Product Description": "Product Description",
+  "YOU MAY ALSO LIKE": "YOU MAY ALSO LIKE"
 }

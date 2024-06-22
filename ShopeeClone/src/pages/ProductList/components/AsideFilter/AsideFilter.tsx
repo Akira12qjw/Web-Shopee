@@ -143,7 +143,7 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
       </Link>
       <div className='bg-gray-300 h-[1px] my-4' />
       <div className='my-5'>
-        <div>Khoản Giá</div>
+        <div>{t('aside filter.Price range')}</div>
         <form className='mt-2' onSubmit={onSubmit}>
           <div className='flex items-start'>
             <Controller
@@ -154,7 +154,7 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
                   <InputNumber
                     type='text'
                     className='grow'
-                    placeholder='₫ TỪ'
+                    placeholder={t('aside filter.To')}
                     classNameInput='p-1 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
                     classNameError='hidden'
                     {...field}
@@ -176,7 +176,7 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
                   <InputNumber
                     type='text'
                     className='grow'
-                    placeholder='₫ ĐẾN'
+                    placeholder={t('aside filter.From')}
                     classNameInput='p-1 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
                     classNameError='hidden'
                     {...field}
@@ -191,18 +191,18 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
           </div>
           <div className='mt-1 min-h-[1.25rem] text-center text-sm text-red-600'>{errors.price_min?.message}</div>
           <Button className='w-full p-2 uppercase bg-orange text-white text-sm hover:bg-orange/80 flex justify-center items-center'>
-            Áp dụng
+            {t('aside filter.Apply')}
           </Button>
         </form>
       </div>
       <div className='bg-gray-300 h-[1px] my-4' />
-      <div className='text-sm'>Đánh giá</div>
+      <div className='text-sm'>{t('aside filter.Rating')}</div>
       <RatingStars queryConfig={queryConfig} />
       <Button
         onClick={handleRemoveAll}
         className='w-full p-2 uppercase bg-orange text-white text-sm hover:bg-orange/80 flex justify-center items-center'
       >
-        Xóa tất cả
+        {t('aside filter.Delete all')}
       </Button>
     </div>
   )
