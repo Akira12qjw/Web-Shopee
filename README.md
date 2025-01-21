@@ -12,6 +12,7 @@ git clone https://github.com/Akira12qjw/Web-Shopee.git
 Install the project dependencies using Yarn.
 
 ```bash
+cd ShopeeClone
 yarn install
 ```
 ## 3. Run 
