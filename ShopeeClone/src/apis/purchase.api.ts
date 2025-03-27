@@ -13,9 +13,13 @@ const handleError = (error: AxiosError) => {
 const purchaseApi = {
   async addToCart(body: { product_id: string; buy_count: number }) {
     try {
-      return await http.post<SuccessResponse<Purchase>>(`${URL}/add-to-cart`, body)
+      const response = await http.post<SuccessResponse<Purchase>>(`${URL}/add-to-cart`, body)
+      return response
     } catch (error) {
-      return handleError(error as AxiosError)
+      if (error instanceof AxiosError) {
+        throw error
+      }
+      throw new Error('Có lỗi xảy ra khi thêm vào giỏ hàng')
     }
   },
   async getPurchases(params: { status: PurchaseListStatus }) {

@@ -51,9 +51,19 @@ export default function ProductDetail() {
 
   const addToCartMutation = useMutation({
     mutationFn: purchaseApi.addToCart,
+    onSuccess: (data) => {
+      toast.success(data.data.message, {
+        position: 'top-center',
+        autoClose: 2000
+      })
+      queryClient.invalidateQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
+    },
     onError: (error) => {
       if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng')
+        toast.error(error.response?.data.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng', {
+          position: 'top-center',
+          autoClose: 2000
+        })
       }
     }
   })
