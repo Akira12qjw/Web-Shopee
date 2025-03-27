@@ -12,6 +12,19 @@ export default defineConfig({
   server: {
     port: 3000
   },
+  base: '/',
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          utils: ['axios', 'lodash']
+        }
+      }
+    }
+  },
   css: {
     devSourcemap: true
   },
