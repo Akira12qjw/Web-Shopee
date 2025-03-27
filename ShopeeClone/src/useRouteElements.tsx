@@ -5,17 +5,8 @@ import MainLayout from './layouts/MainLayout'
 import { useContext, lazy, Suspense } from 'react'
 import { AppContext } from './contexts/app.context'
 import path from './constants/path'
-// import Profile from './pages/User/pages/Profile'
-// import ProductDetail from './pages/ProductDeatail'
-// import Cart from './pages/Cart'
-// import ProductList from './pages/ProductList'
-// import Login from './pages/Login'
-// import Register from './pages/Register'
 import CartLayout from './layouts/CartLayout'
 import UserLayout from './pages/User/layouts/UserLayout'
-// import ChangePassword from './pages/User/pages/ChangePassword'
-// import HistoryPurchase from './pages/User/pages/HistoryPurchase'
-// import NotFound from './pages/NotFound'
 
 const Login = lazy(() => import('./pages/Login'))
 const ProductList = lazy(() => import('./pages/ProductList'))

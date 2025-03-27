@@ -1,8 +1,10 @@
+/* eslint-disable import/no-named-as-default-member */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
+import axios from 'axios'
 
 import productApi from 'src/apis/product.api'
 import ProductRating from 'src/components/ProductRating'
@@ -96,6 +98,11 @@ export default function ProductDetail() {
   }
 
   const addToCart = () => {
+    const accessToken = localStorage.getItem('accessToken')
+    if (!accessToken) {
+      navigate(path.login)
+      return
+    }
     addToCartMutation.mutate(
       { buy_count: buyCount, product_id: product?._id as string },
       {
@@ -108,16 +115,26 @@ export default function ProductDetail() {
   }
 
   const buyNow = async () => {
-    const res = await addToCartMutation.mutateAsync({ buy_count: buyCount, product_id: product?._id as string })
-    const purchase = res.data.data
-    navigate(path.cart, {
-      state: {
-        purchaseId: purchase._id
+    const accessToken = localStorage.getItem('accessToken')
+    if (!accessToken) {
+      navigate(path.login)
+      return
+    }
+    try {
+      const res = await addToCartMutation.mutateAsync({ buy_count: buyCount, product_id: product?._id as string })
+      const purchase = res.data.data
+      navigate(path.cart, {
+        state: {
+          purchaseId: purchase._id
+        }
+      })
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        navigate(path.login)
       }
-    })
+    }
   }
 
-  console.log(addToCartMutation)
   if (!product) return null
   return (
     <div className='bg-gray-200 py-6'>
