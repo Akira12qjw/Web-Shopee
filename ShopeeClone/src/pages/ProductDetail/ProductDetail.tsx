@@ -128,14 +128,22 @@ export default function ProductDetail() {
     try {
       const res = await addToCartMutation.mutateAsync({ buy_count: buyCount, product_id: product?._id as string })
       const purchase = res.data.data
+      queryClient.invalidateQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
       navigate(path.cart, {
         state: {
           purchaseId: purchase._id
         }
       })
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        navigate(path.login)
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          navigate(path.login)
+        } else {
+          toast.error(error.response?.data.message || 'Có lỗi xảy ra khi mua hàng', {
+            position: 'top-center',
+            autoClose: 2000
+          })
+        }
       }
     }
   }
