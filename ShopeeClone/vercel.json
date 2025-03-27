@@ -5,13 +5,6 @@
       "destination": "/index.html"
     }
   ],
-  "routes": [
-    {
-      "src": "/[^.]+",
-      "dest": "/",
-      "status": 200
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -43,5 +36,7 @@
         }
       ]
     }
-  ]
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }
