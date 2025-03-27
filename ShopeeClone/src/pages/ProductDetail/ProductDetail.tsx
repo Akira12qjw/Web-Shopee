@@ -50,7 +50,12 @@ export default function ProductDetail() {
   })
 
   const addToCartMutation = useMutation({
-    mutationFn: purchaseApi.addToCart
+    mutationFn: purchaseApi.addToCart,
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng')
+      }
+    }
   })
   const navigate = useNavigate()
   useEffect(() => {
@@ -139,13 +144,15 @@ export default function ProductDetail() {
   return (
     <div className='bg-gray-200 py-6'>
       <Helmet>
-        <title>{[product.name]}</title>
+        <title>{product.name}</title>
         <meta
           name='description'
           content={convert(product.description, {
             limits: {
-              maxInputLength: 150
-            }
+              maxInputLength: 150,
+              ellipsis: '...'
+            },
+            wordwrap: 130
           })}
         />
       </Helmet>

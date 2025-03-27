@@ -37,7 +37,9 @@ export class Http {
       headers: {
         'Content-Type': 'application/json',
         'expire-access-token': 60 * 60 * 24, // 1 ngày
-        'expire-refresh-token': 60 * 60 * 24 * 160 // 160 ngày
+        'expire-refresh-token': 60 * 60 * 24 * 160, // 160 ngày
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity
       }
     })
     this.instance.interceptors.request.use(
