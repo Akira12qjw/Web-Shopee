@@ -1,10 +1,8 @@
 import { describe, expect, test } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import matchers from '@testing-library/jest-dom/matchers'
+import { userEvent } from '@testing-library/user-event'
 import App from './App'
 import { BrowserRouter } from 'react-router-dom'
-// expect.extend(matchers)
 
 describe('App', () => {
   test('App render và chuyển trang ', async () => {
