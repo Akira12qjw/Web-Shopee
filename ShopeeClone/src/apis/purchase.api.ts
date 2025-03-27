@@ -11,23 +11,27 @@ const handleError = (error: AxiosError) => {
 }
 
 const purchaseApi = {
-  addToCart(body: { product_id: string; buy_count: number }) {
-    return http.post<SuccessResponse<Purchase>>(`${URL}/add-to-cart`, body).catch(handleError)
+  async addToCart(body: { product_id: string; buy_count: number }) {
+    try {
+      return await http.post<SuccessResponse<Purchase>>(`${URL}/add-to-cart`, body)
+    } catch (error) {
+      return handleError(error as AxiosError)
+    }
   },
-  getPurchases(params: { status: PurchaseListStatus }) {
+  async getPurchases(params: { status: PurchaseListStatus }) {
     return http
       .get<SuccessResponse<Purchase[]>>(`${URL}`, {
         params
       })
       .catch(handleError)
   },
-  buyProducts(body: { product_id: string; buy_count: number }[]) {
+  async buyProducts(body: { product_id: string; buy_count: number }[]) {
     return http.post<SuccessResponse<Purchase[]>>(`${URL}/buy-products`, body).catch(handleError)
   },
-  updatePurchase(body: { product_id: string; buy_count: number }) {
+  async updatePurchase(body: { product_id: string; buy_count: number }) {
     return http.put<SuccessResponse<Purchase>>(`${URL}/update-purchase`, body).catch(handleError)
   },
-  deletePurchase(purchaseIds: string[]) {
+  async deletePurchase(purchaseIds: string[]) {
     return http.delete<SuccessResponse<{ deleted_count: number }>>(`${URL}`, {
       data: purchaseIds
     })
